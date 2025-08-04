@@ -2,10 +2,6 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/ge
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 
-if (!GEMINI_API_KEY) {
-  throw new Error('Missing Gemini API key')
-}
-
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
 
 export class GeminiService {

@@ -6,10 +6,6 @@ const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID!
 const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET!
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/twitter/callback`
 
-if (!TWITTER_CLIENT_ID || !TWITTER_CLIENT_SECRET) {
-  throw new Error('Missing Twitter API credentials')
-}
-
 export class TwitterService {
   private static instance: TwitterService
   
