@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "app/api/cron/publish-scheduled/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/analytics/sync/route.ts": {
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/publish-scheduled",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/analytics/sync",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}
