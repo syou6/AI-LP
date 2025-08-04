@@ -1,0 +1,32 @@
+name: Publish Scheduled Posts
+
+on:
+  schedule:
+    # 5分ごとに実行（無料）
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Scheduled Posts
+        env:
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST "$VERCEL_URL/api/cron/publish-scheduled" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n 1)
+          body=$(echo "$response" | head -n -1)
+          
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+          
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: HTTP $http_code"
+            exit 1
+          fi
