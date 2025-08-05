@@ -18,7 +18,7 @@ export default function LandingPage() {
     checkUser()
 
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
-      (event, session) => {
+      (event: any, session: any) => {
         setUser(session?.user ?? null)
       }
     )
