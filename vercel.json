@@ -6,11 +6,5 @@
     "app/api/analytics/sync/route.ts": {
       "maxDuration": 60
     }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/publish-scheduled",
-      "schedule": "0 9 * * *"
-    }
-  ]
+  }
 }
