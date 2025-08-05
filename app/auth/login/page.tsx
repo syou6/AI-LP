@@ -71,14 +71,14 @@ export default function LoginPage() {
         <div className="text-center">
           <Link href="/" className="inline-flex items-center space-x-2 mb-8">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-            <span className="text-xl font-bold text-gray-900">AI Marketing</span>
+            <span className="text-xl font-bold text-gray-900">AIマーケティング</span>
           </Link>
           
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back
+            おかえりなさい
           </h2>
           <p className="text-gray-600">
-            Sign in to your account to continue
+            アカウントにログインして続ける
           </p>
         </div>
 
@@ -94,7 +94,7 @@ export default function LoginPage() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email address
+                  メールアドレス
                 </label>
                 <input
                   id="email"
@@ -103,7 +103,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   required
                   className="input"
-                  placeholder="Enter your email"
+                  placeholder="メールアドレスを入力"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -111,7 +111,7 @@ export default function LoginPage() {
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
+                  パスワード
                 </label>
                 <input
                   id="password"
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   required
                   className="input"
-                  placeholder="Enter your password"
+                  placeholder="パスワードを入力"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -135,13 +135,13 @@ export default function LoginPage() {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                    Remember me
+                    ログイン状態を保持
                   </label>
                 </div>
 
                 <div className="text-sm">
                   <Link href="/auth/forgot-password" className="text-blue-600 hover:text-blue-500">
-                    Forgot your password?
+                    パスワードをお忘れですか？
                   </Link>
                 </div>
               </div>
@@ -154,10 +154,10 @@ export default function LoginPage() {
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Signing in...
+                    ログイン中...
                   </div>
                 ) : (
-                  'Sign in'
+                  'ログイン'
                 )}
               </button>
             </form>
@@ -167,9 +167,9 @@ export default function LoginPage() {
         {/* Sign up link */}
         <div className="text-center">
           <p className="text-gray-600">
-            Don't have an account?{' '}
+            アカウントをお持ちでない方は{' '}
             <Link href="/auth/signup" className="text-blue-600 hover:text-blue-500 font-medium">
-              Sign up for free
+              無料でアカウント作成
             </Link>
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function LoginPage() {
         {/* Back to home */}
         <div className="text-center">
           <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
-            ← Back to home
+            ← ホームに戻る
           </Link>
         </div>
       </div>

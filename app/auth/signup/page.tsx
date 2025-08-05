@@ -31,7 +31,7 @@ export default function SignupPage() {
     setError('')
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError('パスワードは6文字以上で入力してください')
       setLoading(false)
       return
     }
@@ -71,7 +71,7 @@ export default function SignupPage() {
         router.push('/dashboard')
       }
     } catch (err: any) {
-      setError('An unexpected error occurred')
+      setError('予期しないエラーが発生しました')
       console.error('Signup error:', err)
     } finally {
       setLoading(false)
@@ -85,7 +85,7 @@ export default function SignupPage() {
           <div className="text-center">
             <Link href="/" className="inline-flex items-center space-x-2 mb-8">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-              <span className="text-xl font-bold text-gray-900">AI Marketing</span>
+              <span className="text-xl font-bold text-gray-900">AIマーケティング</span>
             </Link>
             
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -95,29 +95,29 @@ export default function SignupPage() {
             </div>
             
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              Check your email
+              メールを確認してください
             </h2>
             <p className="text-gray-600 mb-8">
-              We've sent a confirmation link to <strong>{email}</strong>. 
-              Click the link in the email to activate your account.
+              <strong>{email}</strong>に確認リンクを送信しました。
+              メール内のリンクをクリックしてアカウントを有効化してください。
             </p>
             
             <div className="space-y-4">
               <Link href="/auth/login" className="btn-primary w-full">
-                Go to Login
+                ログインへ
               </Link>
               <Link href="/" className="btn-ghost w-full">
-                Back to Home
+                ホームに戻る
               </Link>
             </div>
             
             <p className="text-sm text-gray-500 mt-6">
-              Didn't receive the email? Check your spam folder or{' '}
+              メールが届かない場合は、迷惑メールフォルダを確認するか{' '}
               <button 
                 onClick={() => setSuccess(false)}
                 className="text-blue-600 hover:text-blue-500 underline"
               >
-                try again
+                もう一度お試しください
               </button>
             </p>
           </div>
@@ -137,10 +137,10 @@ export default function SignupPage() {
           </Link>
           
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Create your account
+            アカウントを作成
           </h2>
           <p className="text-gray-600">
-            Start automating your social media with AI
+            AIでSNS運用を自動化しましょう
           </p>
         </div>
 
@@ -156,7 +156,7 @@ export default function SignupPage() {
 
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full name
+                  お名前
                 </label>
                 <input
                   id="fullName"
@@ -164,7 +164,7 @@ export default function SignupPage() {
                   type="text"
                   autoComplete="name"
                   className="input"
-                  placeholder="Enter your full name"
+                  placeholder="お名前を入力"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                 />
@@ -172,7 +172,7 @@ export default function SignupPage() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email address
+                  メールアドレス
                 </label>
                 <input
                   id="email"
@@ -181,7 +181,7 @@ export default function SignupPage() {
                   autoComplete="email"
                   required
                   className="input"
-                  placeholder="Enter your email"
+                  placeholder="メールアドレスを入力"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -189,7 +189,7 @@ export default function SignupPage() {
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
+                  パスワード
                 </label>
                 <input
                   id="password"
@@ -198,12 +198,12 @@ export default function SignupPage() {
                   autoComplete="new-password"
                   required
                   className="input"
-                  placeholder="Create a password (min. 6 characters)"
+                  placeholder="パスワードを作成（6文字以上）"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Must be at least 6 characters long
+                  6文字以上で入力してください
                 </p>
               </div>
 
@@ -216,14 +216,14 @@ export default function SignupPage() {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                  I agree to the{' '}
                   <Link href="/terms" className="text-blue-600 hover:text-blue-500">
-                    Terms of Service
+                    利用規約
                   </Link>
-                  {' '}and{' '}
+                  と
                   <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
-                    Privacy Policy
+                    プライバシーポリシー
                   </Link>
+                  に同意します
                 </label>
               </div>
 
@@ -235,10 +235,10 @@ export default function SignupPage() {
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating account...
+                    アカウント作成中...
                   </div>
                 ) : (
-                  'Create account'
+                  'アカウントを作成'
                 )}
               </button>
             </form>
@@ -248,9 +248,9 @@ export default function SignupPage() {
         {/* Login link */}
         <div className="text-center">
           <p className="text-gray-600">
-            Already have an account?{' '}
+            すでにアカウントをお持ちの方は{' '}
             <Link href="/auth/login" className="text-blue-600 hover:text-blue-500 font-medium">
-              Sign in
+              ログイン
             </Link>
           </p>
         </div>
@@ -258,7 +258,7 @@ export default function SignupPage() {
         {/* Back to home */}
         <div className="text-center">
           <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
-            ← Back to home
+            ← ホームに戻る
           </Link>
         </div>
       </div>

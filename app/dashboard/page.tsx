@@ -85,7 +85,7 @@ export default function DashboardPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('ja-JP', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -127,7 +127,7 @@ export default function DashboardPage() {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <p className="text-gray-500">No data available</p>
+          <p className="text-gray-500">データがありません</p>
         </div>
       </div>
     )
@@ -138,14 +138,14 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Welcome back! Here's what's happening with your social media.
+            おかえりなさい！SNSの最新状況をお知らせします。
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
           <Link href="/dashboard/posts/new" className="btn-primary">
-            Create New Post
+            新規投稿を作成
           </Link>
         </div>
       </div>
@@ -161,11 +161,11 @@ export default function DashboardPage() {
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-yellow-800">
-                Connect your Twitter account
+                Twitterアカウントを連携
               </h3>
               <div className="mt-2 text-sm text-yellow-700">
                 <p>
-                  To start posting and tracking analytics, you need to connect your Twitter account.
+                  投稿や分析を開始するには、Twitterアカウントを連携する必要があります。
                 </p>
               </div>
               <div className="mt-4">
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                     href="/dashboard/settings"
                     className="bg-yellow-50 px-2 py-1.5 rounded-md text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:ring-yellow-600"
                   >
-                    Connect Twitter
+                    Twitterを連携
                   </Link>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function DashboardPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Posts</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">総投稿数</dt>
                   <dd className="text-lg font-medium text-gray-900">{data.stats.total_posts}</dd>
                 </dl>
               </div>
@@ -218,7 +218,7 @@ export default function DashboardPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Impressions</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">総インプレッション</dt>
                   <dd className="text-lg font-medium text-gray-900">{formatNumber(data.stats.total_impressions)}</dd>
                 </dl>
               </div>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Engagements</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">総エンゲージメント</dt>
                   <dd className="text-lg font-medium text-gray-900">{formatNumber(data.stats.total_engagements)}</dd>
                 </dl>
               </div>
@@ -258,7 +258,7 @@ export default function DashboardPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Engagement Rate</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">エンゲージメント率</dt>
                   <dd className="text-lg font-medium text-gray-900">{data.stats.avg_engagement_rate.toFixed(1)}%</dd>
                 </dl>
               </div>
@@ -271,8 +271,8 @@ export default function DashboardPage() {
         {/* Upcoming Posts */}
         <div className="card">
           <div className="card-header">
-            <h3 className="card-title">Upcoming Posts</h3>
-            <p className="card-description">Your scheduled posts</p>
+            <h3 className="card-title">今後の投稿</h3>
+            <p className="card-description">スケジュールされた投稿</p>
           </div>
           <div className="card-content">
             {data.upcoming_posts.length === 0 ? (
@@ -280,11 +280,11 @@ export default function DashboardPage() {
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No scheduled posts</h3>
-                <p className="mt-1 text-sm text-gray-500">Get started by creating a new post.</p>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">スケジュールされた投稿はありません</h3>
+                <p className="mt-1 text-sm text-gray-500">新しい投稿を作成して始めましょう。</p>
                 <div className="mt-6">
                   <Link href="/dashboard/posts/new" className="btn-primary">
-                    Create Post
+                    投稿を作成
                   </Link>
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
                 {data.upcoming_posts.length > 5 && (
                   <div className="text-center">
                     <Link href="/dashboard/posts" className="text-sm text-blue-600 hover:text-blue-500">
-                      View all scheduled posts
+                      すべてのスケジュール投稿を表示
                     </Link>
                   </div>
                 )}
@@ -319,8 +319,8 @@ export default function DashboardPage() {
         {/* Top Performing Posts */}
         <div className="card">
           <div className="card-header">
-            <h3 className="card-title">Top Performing Posts</h3>
-            <p className="card-description">Posts with highest engagement rates</p>
+            <h3 className="card-title">トップパフォーマー</h3>
+            <p className="card-description">エンゲージメント率が高い投稿</p>
           </div>
           <div className="card-content">
             {data.top_posts.length === 0 ? (
@@ -328,8 +328,8 @@ export default function DashboardPage() {
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No analytics data</h3>
-                <p className="mt-1 text-sm text-gray-500">Publish posts to see performance metrics.</p>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">分析データがありません</h3>
+                <p className="mt-1 text-sm text-gray-500">投稿を公開してパフォーマンスを確認しましょう。</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -348,16 +348,16 @@ export default function DashboardPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900 line-clamp-2">{post.posts.content}</p>
                       <div className="flex items-center space-x-4 mt-1 text-xs text-gray-500">
-                        <span>{post.engagement_rate.toFixed(1)}% engagement</span>
-                        <span>{formatNumber(post.impressions)} impressions</span>
-                        <span>{post.likes + post.retweets} interactions</span>
+                        <span>エンゲージメント {post.engagement_rate.toFixed(1)}%</span>
+                        <span>{formatNumber(post.impressions)} インプレッション</span>
+                        <span>{post.likes + post.retweets} インタラクション</span>
                       </div>
                     </div>
                   </div>
                 ))}
                 <div className="text-center">
                   <Link href="/dashboard/analytics" className="text-sm text-blue-600 hover:text-blue-500">
-                    View detailed analytics
+                    詳細な分析を表示
                   </Link>
                 </div>
               </div>
@@ -369,8 +369,8 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Quick Actions</h3>
-          <p className="card-description">Common tasks to get you started</p>
+          <h3 className="card-title">クイックアクション</h3>
+          <p className="card-description">よく使う機能</p>
         </div>
         <div className="card-content">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -379,7 +379,7 @@ export default function DashboardPage() {
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                <span>Create Post</span>
+                <span>投稿を作成</span>
               </div>
             </Link>
             
@@ -388,7 +388,7 @@ export default function DashboardPage() {
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-                <span>Manage Products</span>
+                <span>商品管理</span>
               </div>
             </Link>
             
@@ -397,7 +397,7 @@ export default function DashboardPage() {
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <span>View Analytics</span>
+                <span>分析を表示</span>
               </div>
             </Link>
             
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>Settings</span>
+                <span>設定</span>
               </div>
             </Link>
           </div>

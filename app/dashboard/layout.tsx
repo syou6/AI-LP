@@ -67,12 +67,12 @@ export default function DashboardLayout({
   }
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-    { name: 'Posts', href: '/dashboard/posts', icon: 'posts' },
-    { name: 'Create Post', href: '/dashboard/posts/new', icon: 'create' },
-    { name: 'Analytics', href: '/dashboard/analytics', icon: 'analytics' },
-    { name: 'Products', href: '/dashboard/products', icon: 'products' },
-    { name: 'Settings', href: '/dashboard/settings', icon: 'settings' },
+    { name: 'ダッシュボード', href: '/dashboard', icon: 'dashboard' },
+    { name: '投稿一覧', href: '/dashboard/posts', icon: 'posts' },
+    { name: '新規投稿', href: '/dashboard/posts/new', icon: 'create' },
+    { name: '分析', href: '/dashboard/analytics', icon: 'analytics' },
+    { name: '商品情報', href: '/dashboard/products', icon: 'products' },
+    { name: '設定', href: '/dashboard/settings', icon: 'settings' },
   ]
 
   const getIcon = (iconName: string) => {
@@ -134,7 +134,7 @@ export default function DashboardLayout({
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
               <Link href="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-                <span className="text-xl font-bold text-gray-900">AI Marketing</span>
+                <span className="text-xl font-bold text-gray-900">AIマーケティング</span>
               </Link>
               <button
                 onClick={() => setSidebarOpen(false)}
@@ -172,7 +172,7 @@ export default function DashboardLayout({
           <div className="flex items-center h-16 px-4 border-b border-gray-200">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-              <span className="text-xl font-bold text-gray-900">AI Marketing</span>
+              <span className="text-xl font-bold text-gray-900">AIマーケティング</span>
             </Link>
           </div>
           <nav className="mt-5 flex-1 px-2 space-y-1">
@@ -211,7 +211,7 @@ export default function DashboardLayout({
             {/* User menu */}
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-700">
-                Welcome back, {user?.full_name || user?.email?.split('@')[0]}!
+                おかえりなさい、{user?.full_name || user?.email?.split('@')[0]}さん！
               </div>
               <div className="relative">
                 <button
