@@ -4,7 +4,10 @@ import { Database } from '@/types/database'
 let clientInstance: ReturnType<typeof createClientComponentClient<Database>> | null = null
 
 export const createClient = () => {
-  return createClientComponentClient<Database>()
+  if (!clientInstance && typeof window !== 'undefined') {
+    clientInstance = createClientComponentClient<Database>()
+  }
+  return clientInstance!
 }
 
 // Client-side Supabase client for use in components

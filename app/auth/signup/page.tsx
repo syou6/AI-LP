@@ -37,6 +37,8 @@ export default function SignupPage() {
     }
 
     try {
+      console.log('Attempting signup for:', email)
+      
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
@@ -44,11 +46,26 @@ export default function SignupPage() {
           data: {
             full_name: fullName,
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
 
       if (error) {
-        setError(error.message)
+        console.error('Signup error:', error)
+        // エラーメッセージを日本語に変換
+        if (error.message.includes('Invalid email')) {
+          setError('有効なメールアドレスを入力してください')
+        } else if (error.message.includes('Password')) {
+          setError('パスワードは6文字以上で入力してください')
+        } else if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+          setError('このメールアドレスは既に登録されています。ログインページからログインしてください。')
+        } else if (error.message.includes('Email rate limit exceeded')) {
+          setError('メール送信の制限に達しました。しばらく待ってから再度お試しください。')
+        } else if (error.message.includes('Invalid login credentials')) {
+          setError('認証情報が無効です。メールアドレスとパスワードを確認してください。')
+        } else {
+          setError(`エラーが発生しました: ${error.message}`)
+        }
         return
       }
 
