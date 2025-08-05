@@ -1,12 +1,11 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/database'
 
+let clientInstance: ReturnType<typeof createClientComponentClient<Database>> | null = null
+
 export const createClient = () => {
-  return createClientComponentClient<Database>({
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  })
+  return createClientComponentClient<Database>()
 }
 
 // Client-side Supabase client for use in components
-export const supabaseClient = createClient()
+export const supabaseClient = typeof window !== 'undefined' ? createClient() : null as any

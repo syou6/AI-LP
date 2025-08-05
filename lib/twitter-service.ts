@@ -2,8 +2,8 @@ import crypto from 'crypto'
 import { TwitterApi } from 'twitter-api-v2'
 import { TwitterAuthData, TwitterPostResponse, TwitterMetrics } from '@/types/database'
 
-const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID!
-const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET!
+const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID || ''
+const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET || ''
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/twitter/callback`
 
 export class TwitterService {
