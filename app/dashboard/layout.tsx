@@ -51,7 +51,7 @@ export default function DashboardLayout({
     checkUser()
 
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
-      (event, session) => {
+      (event: any, session: any) => {
         if (event === 'SIGNED_OUT' || !session) {
           router.push('/auth/login')
         }
