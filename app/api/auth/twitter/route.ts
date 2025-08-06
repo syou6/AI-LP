@@ -41,7 +41,15 @@ export async function GET(request: NextRequest) {
     console.log('Twitter OAuth URL生成成功:', url)
     
     // Store state and code verifier in cookies for verification
-    const response = NextResponse.json({ url })
+    const response = NextResponse.json(
+      { url },
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
     
     response.cookies.set('twitter_oauth_state', state, {
       httpOnly: true,

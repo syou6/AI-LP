@@ -93,7 +93,13 @@ export default function SettingsPage() {
     setMessageType('')
 
     try {
-      const response = await fetch('/api/auth/twitter')
+      const response = await fetch('/api/auth/twitter', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
       
       if (!response.ok) {
         const data = await response.json()
