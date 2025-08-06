@@ -17,34 +17,54 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Check environment variables
+    const clientId = process.env.TWITTER_CLIENT_ID
+    const clientSecret = process.env.TWITTER_CLIENT_SECRET
+    
+    if (!clientId || !clientSecret) {
+      console.error('Twitter環境変数が設定されていません:', {
+        clientId: clientId ? '設定済み' : '未設定',
+        clientSecret: clientSecret ? '設定済み' : '未設定',
+      })
+      return NextResponse.json(
+        { error: 'Twitter APIの設定が不完全です。環境変数を確認してください。' },
+        { status: 500 }
+      )
+    }
+
     // Generate state for CSRF protection
     const state = crypto.randomBytes(32).toString('hex')
     
     // Generate OAuth URL with PKCE
     const { url, codeVerifier } = twitterService.generateAuthUrl(state)
     
+    console.log('Twitter OAuth URL生成成功:', url)
+    
     // Store state and code verifier in cookies for verification
     const response = NextResponse.json({ url })
     
     response.cookies.set('twitter_oauth_state', state, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 600, // 10 minutes
+      path: '/',
     })
     
     response.cookies.set('twitter_code_verifier', codeVerifier, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 600, // 10 minutes
+      path: '/',
     })
     
     response.cookies.set('twitter_user_id', user.id, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 600, // 10 minutes
+      path: '/',
     })
     
     return response

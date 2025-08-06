@@ -29,17 +29,26 @@ export default function SettingsPage() {
     const error = searchParams.get('error')
 
     if (success === 'twitter_connected') {
-      setMessage('Twitter account connected successfully!')
+      setMessage('Twitterアカウントを接続しました！')
       setMessageType('success')
     } else if (error) {
       const errorMessages = {
-        oauth_denied: 'Twitter connection was cancelled.',
-        missing_parameters: 'Invalid OAuth response from Twitter.',
-        invalid_state: 'Security validation failed. Please try again.',
-        database_error: 'Failed to save Twitter connection.',
-        oauth_failed: 'Twitter connection failed. Please try again.',
+        oauth_denied: 'Twitter接続がキャンセルされました。',
+        missing_parameters: 'Twitterからの無効なOAuthレスポンスです。',
+        invalid_state: 'セキュリティ検証に失敗しました。もう一度お試しください。',
+        database_error: 'Twitter接続の保存に失敗しました。',
+        oauth_failed: 'Twitter接続に失敗しました。もう一度お試しください。',
+        token_exchange_failed: 'Twitterトークンの取得に失敗しました。APIキーの設定を確認してください。',
       }
-      setMessage(errorMessages[error as keyof typeof errorMessages] || 'An error occurred connecting to Twitter.')
+      let errorMessage = errorMessages[error as keyof typeof errorMessages] || 'Twitter接続中にエラーが発生しました。'
+      
+      // 詳細なエラー情報があれば追加
+      const details = searchParams.get('details')
+      if (details) {
+        errorMessage += ` (詳細: ${details})`
+      }
+      
+      setMessage(errorMessage)
       setMessageType('error')
     }
 
@@ -57,11 +66,22 @@ export default function SettingsPage() {
   const checkTwitterStatus = async () => {
     try {
       const response = await fetch('/api/auth/twitter/verify')
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Twitter status check failed:', errorData)
+        setTwitterStatus({ 
+          connected: false, 
+          error: response.status === 404 
+            ? 'API接続エラー: 環境変数の設定を確認してください' 
+            : errorData.error || '接続状態の確認に失敗しました' 
+        })
+        return
+      }
       const data = await response.json()
       setTwitterStatus(data)
     } catch (error) {
       console.error('Error checking Twitter status:', error)
-      setTwitterStatus({ connected: false, error: 'Failed to check connection status' })
+      setTwitterStatus({ connected: false, error: '接続状態の確認に失敗しました' })
     } finally {
       setLoading(false)
     }
@@ -74,10 +94,20 @@ export default function SettingsPage() {
 
     try {
       const response = await fetch('/api/auth/twitter')
-      const data = await response.json()
-
+      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to initiate Twitter connection')
+        const data = await response.json()
+        console.error('Twitter connection failed:', data)
+        throw new Error(
+          response.status === 404 
+            ? 'API接続エラー: 環境変数の設定を確認してください' 
+            : data.error || 'Twitter接続の開始に失敗しました'
+        )
+      }
+
+      const data = await response.json()
+      if (!data.url) {
+        throw new Error('認証URLの生成に失敗しました')
       }
 
       // Redirect to Twitter OAuth
@@ -101,11 +131,11 @@ export default function SettingsPage() {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || 'Failed to disconnect Twitter')
+        throw new Error(data.error || 'Twitterの切断に失敗しました')
       }
 
       setTwitterStatus({ connected: false })
-      setMessage('Twitter account disconnected successfully.')
+      setMessage('Twitterアカウントを切断しました。')
       setMessageType('success')
     } catch (error: any) {
       setMessage(error.message)
@@ -118,9 +148,9 @@ export default function SettingsPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+        <h1 className="text-2xl font-bold text-gray-900">設定</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Manage your account settings and integrations
+          アカウント設定と連携を管理します
         </p>
       </div>
 
@@ -138,16 +168,16 @@ export default function SettingsPage() {
         {/* Twitter Integration */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Twitter Integration</h2>
+            <h2 className="card-title">Twitter連携</h2>
             <p className="card-description">
-              Connect your Twitter account to publish posts and track analytics
+              Twitterアカウントを接続して投稿の公開と分析を追跡します
             </p>
           </div>
           <div className="card-content">
             {loading ? (
               <div className="flex items-center space-x-3">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                <span className="text-gray-600">Checking connection status...</span>
+                <span className="text-gray-600">接続状態を確認中...</span>
               </div>
             ) : (
               <div className="space-y-4">
@@ -166,7 +196,7 @@ export default function SettingsPage() {
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
-                            Connected
+                            接続済み
                           </p>
                           {twitterStatus.twitter_username && (
                             <p className="text-sm text-gray-600">
@@ -180,7 +210,7 @@ export default function SettingsPage() {
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                             </svg>
-                            Not connected
+                            未接続
                           </p>
                           {twitterStatus.error && (
                             <p className="text-sm text-red-600">{twitterStatus.error}</p>
@@ -200,10 +230,10 @@ export default function SettingsPage() {
                         {disconnecting ? (
                           <div className="flex items-center">
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Disconnecting...
+                            切断中...
                           </div>
                         ) : (
-                          'Disconnect'
+                          '切断'
                         )}
                       </button>
                     ) : (
@@ -215,10 +245,10 @@ export default function SettingsPage() {
                         {connecting ? (
                           <div className="flex items-center">
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Connecting...
+                            接続中...
                           </div>
                         ) : (
-                          'Connect Twitter'
+                          'Twitterを接続'
                         )}
                       </button>
                     )}
@@ -235,10 +265,10 @@ export default function SettingsPage() {
                       </div>
                       <div className="ml-3">
                         <h3 className="text-sm font-medium text-yellow-800">
-                          Connection Expired
+                          接続が期限切れです
                         </h3>
                         <div className="mt-1 text-sm text-yellow-700">
-                          <p>Your Twitter connection has expired. Please reconnect to continue posting.</p>
+                          <p>Twitterの接続が期限切れです。投稿を続けるには再接続してください。</p>
                         </div>
                       </div>
                     </div>
@@ -255,14 +285,14 @@ export default function SettingsPage() {
                       </div>
                       <div className="ml-3">
                         <h3 className="text-sm font-medium text-blue-800">
-                          Why connect Twitter?
+                          Twitterを接続する理由
                         </h3>
                         <div className="mt-1 text-sm text-blue-700">
                           <ul className="list-disc list-inside space-y-1">
-                            <li>Post directly to your Twitter account</li>
-                            <li>Schedule posts for optimal engagement</li>
-                            <li>Track detailed analytics and metrics</li>
-                            <li>Monitor your account performance</li>
+                            <li>Twitterアカウントに直接投稿</li>
+                            <li>最適なエンゲージメントのための投稿スケジュール</li>
+                            <li>詳細な分析と指標の追跡</li>
+                            <li>アカウントパフォーマンスの監視</li>
                           </ul>
                         </div>
                       </div>
@@ -277,17 +307,17 @@ export default function SettingsPage() {
         {/* Account Settings */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Account Settings</h2>
+            <h2 className="card-title">アカウント設定</h2>
             <p className="card-description">
-              Manage your account preferences
+              アカウントの設定を管理します
             </p>
           </div>
           <div className="card-content">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900">Email Notifications</h3>
-                  <p className="text-sm text-gray-500">Receive notifications about your posts and analytics</p>
+                  <h3 className="text-sm font-medium text-gray-900">メール通知</h3>
+                  <p className="text-sm text-gray-500">投稿や分析に関する通知を受け取る</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" defaultChecked />
@@ -297,8 +327,8 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900">Analytics Reports</h3>
-                  <p className="text-sm text-gray-500">Weekly summary of your post performance</p>
+                  <h3 className="text-sm font-medium text-gray-900">分析レポート</h3>
+                  <p className="text-sm text-gray-500">投稿パフォーマンスの週次サマリー</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" defaultChecked />
@@ -312,24 +342,24 @@ export default function SettingsPage() {
         {/* Subscription */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Subscription</h2>
+            <h2 className="card-title">サブスクリプション</h2>
             <p className="card-description">
-              Your current plan and billing information
+              現在のプランと請求情報
             </p>
           </div>
           <div className="card-content">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Free Plan</h3>
+                <h3 className="text-lg font-medium text-gray-900">無料プラン</h3>
                 <p className="text-sm text-gray-500">
-                  • Up to 50 posts per month<br />
-                  • Basic analytics<br />
-                  • Twitter integration
+                  • 月に最大50件の投稿<br />
+                  • 基本的な分析<br />
+                  • Twitter連携
                 </p>
               </div>
               <div>
                 <button className="btn-outline">
-                  Upgrade Plan
+                  プランをアップグレード
                 </button>
               </div>
             </div>
@@ -339,22 +369,22 @@ export default function SettingsPage() {
         {/* Danger Zone */}
         <div className="card border-red-200">
           <div className="card-header">
-            <h2 className="card-title text-red-700">Danger Zone</h2>
+            <h2 className="card-title text-red-700">危険ゾーン</h2>
             <p className="card-description">
-              Irreversible and destructive actions
+              取り消し不可能な破壊的な操作
             </p>
           </div>
           <div className="card-content">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900">Delete Account</h3>
+                  <h3 className="text-sm font-medium text-gray-900">アカウント削除</h3>
                   <p className="text-sm text-gray-500">
-                    Permanently delete your account and all associated data
+                    アカウントと関連するすべてのデータを完全に削除します
                   </p>
                 </div>
                 <button className="btn-destructive">
-                  Delete Account
+                  アカウントを削除
                 </button>
               </div>
             </div>

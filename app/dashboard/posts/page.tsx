@@ -82,7 +82,7 @@ export default function PostsPage() {
   }
 
   const deletePost = async (postId: string) => {
-    if (!confirm('Are you sure you want to delete this post?')) {
+    if (!confirm('この投稿を削除してもよろしいですか？')) {
       return
     }
 
@@ -93,19 +93,19 @@ export default function PostsPage() {
 
       if (!response.ok) {
         const result = await response.json()
-        throw new Error(result.error || 'Failed to delete post')
+        throw new Error(result.error || '投稿の削除に失敗しました')
       }
 
       // Refresh the posts list
       setRefreshing(true)
       await fetchPosts()
     } catch (error: any) {
-      alert(`Error deleting post: ${error.message}`)
+      alert(`投稿の削除エラー: ${error.message}`)
     }
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('ja-JP', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -190,14 +190,14 @@ export default function PostsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
+          <h1 className="text-2xl font-bold text-gray-900">投稿管理</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage your social media posts and track their performance
+            ソーシャルメディアの投稿を管理し、パフォーマンスを追跡します
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
           <Link href="/dashboard/posts/new" className="btn-primary">
-            Create New Post
+            新規投稿を作成
           </Link>
         </div>
       </div>
@@ -206,11 +206,11 @@ export default function PostsPage() {
       <div className="mb-6">
         <nav className="flex space-x-8" aria-label="Tabs">
           {[
-            { key: 'all', label: 'All Posts' },
-            { key: 'published', label: 'Published' },
-            { key: 'scheduled', label: 'Scheduled' },
-            { key: 'draft', label: 'Drafts' },
-            { key: 'failed', label: 'Failed' },
+            { key: 'all', label: 'すべての投稿' },
+            { key: 'published', label: '公開済み' },
+            { key: 'scheduled', label: 'スケジュール済み' },
+            { key: 'draft', label: '下書き' },
+            { key: 'failed', label: '失敗' },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -236,16 +236,16 @@ export default function PostsPage() {
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No posts found</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">投稿が見つかりません</h3>
           <p className="mt-1 text-sm text-gray-500">
             {statusFilter === 'all' 
-              ? "Get started by creating your first post."
-              : `No ${statusFilter} posts found.`
+              ? "最初の投稿を作成して始めましょう。"
+              : `${statusFilter === 'published' ? '公開済み' : statusFilter === 'scheduled' ? 'スケジュール済み' : statusFilter === 'draft' ? '下書き' : '失敗した'}の投稿はありません。`
             }
           </p>
           <div className="mt-6">
             <Link href="/dashboard/posts/new" className="btn-primary">
-              Create New Post
+              新規投稿を作成
             </Link>
           </div>
         </div>
@@ -259,7 +259,7 @@ export default function PostsPage() {
                     <div className="flex items-center space-x-2 mb-2">
                       {getStatusIcon(post.status)}
                       <span className={`badge ${getStatusBadge(post.status)}`}>
-                        {post.status.charAt(0).toUpperCase() + post.status.slice(1)}
+                        {post.status === 'draft' ? '下書き' : post.status === 'scheduled' ? 'スケジュール済み' : post.status === 'published' ? '公開済み' : '失敗'}
                       </span>
                       {post.products && (
                         <span className="badge badge-outline">
@@ -274,16 +274,16 @@ export default function PostsPage() {
                     
                     <div className="flex items-center text-sm text-gray-500 space-x-4">
                       <span>
-                        Created {formatDate(post.created_at)}
+                        作成日: {formatDate(post.created_at)}
                       </span>
                       {post.scheduled_for && (
                         <span>
-                          Scheduled for {formatDate(post.scheduled_for)}
+                          投稿予定: {formatDate(post.scheduled_for)}
                         </span>
                       )}
                       {post.published_at && (
                         <span>
-                          Published {formatDate(post.published_at)}
+                          公開日: {formatDate(post.published_at)}
                         </span>
                       )}
                     </div>
@@ -327,7 +327,7 @@ export default function PostsPage() {
                         onClick={() => syncAnalytics(post.id)}
                         disabled={refreshing}
                         className="btn-ghost text-xs"
-                        title="Sync Analytics"
+                        title="分析データを同期"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -341,7 +341,7 @@ export default function PostsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-ghost text-xs"
-                        title="View on Twitter"
+                        title="Twitterで表示"
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
@@ -353,7 +353,7 @@ export default function PostsPage() {
                       <button
                         onClick={() => deletePost(post.id)}
                         className="btn-ghost text-xs text-red-600 hover:text-red-700"
-                        title="Delete Post"
+                        title="投稿を削除"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -370,7 +370,7 @@ export default function PostsPage() {
           {data.pagination.has_more && (
             <div className="text-center pt-6">
               <button className="btn-outline">
-                Load More Posts
+                もっと投稿を読み込む
               </button>
             </div>
           )}

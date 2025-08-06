@@ -4,7 +4,7 @@ import { TwitterAuthData, TwitterPostResponse, TwitterMetrics } from '@/types/da
 
 const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID || ''
 const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET || ''
-const REDIRECT_URI = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/twitter/callback`
+const REDIRECT_URI = process.env.TWITTER_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || 'https://ai-lp-yrhn.vercel.app'}/api/auth/twitter/callback`
 
 export class TwitterService {
   private static instance: TwitterService
@@ -43,6 +43,12 @@ export class TwitterService {
       code_challenge_method: 'S256',
     })
 
+    console.log('OAuth URL params:', {
+      client_id: TWITTER_CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      scope: 'tweet.read tweet.write users.read offline.access',
+    })
+
     const url = `https://twitter.com/i/oauth2/authorize?${params.toString()}`
     
     return { url, codeVerifier }
@@ -62,6 +68,13 @@ export class TwitterService {
       code_verifier: codeVerifier,
     })
 
+    console.log('Token exchange request params:', {
+      client_id: TWITTER_CLIENT_ID ? 'SET' : 'NOT SET',
+      redirect_uri: REDIRECT_URI,
+      code: code ? 'PROVIDED' : 'MISSING',
+      code_verifier: codeVerifier ? 'PROVIDED' : 'MISSING'
+    })
+
     const response = await fetch('https://api.twitter.com/2/oauth2/token', {
       method: 'POST',
       headers: {
@@ -72,7 +85,12 @@ export class TwitterService {
 
     if (!response.ok) {
       const error = await response.text()
-      throw new Error(`Token exchange failed: ${error}`)
+      console.error('Twitter token exchange failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: error
+      })
+      throw new Error(`Token exchange failed: ${response.status} - ${error}`)
     }
 
     const data = await response.json()

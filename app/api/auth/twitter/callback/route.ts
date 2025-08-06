@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = createRouteClient()
     const { searchParams } = new URL(request.url)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-lp-yrhn.vercel.app'
     
     // Get OAuth parameters
     const code = searchParams.get('code')
@@ -16,13 +17,13 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Twitter OAuth error:', error)
       return NextResponse.redirect(
-        new URL('/dashboard/settings?error=oauth_denied', request.url)
+        new URL('/dashboard/settings?error=oauth_denied', baseUrl)
       )
     }
     
     if (!code || !state) {
       return NextResponse.redirect(
-        new URL('/dashboard/settings?error=missing_parameters', request.url)
+        new URL('/dashboard/settings?error=missing_parameters', baseUrl)
       )
     }
     
@@ -31,9 +32,23 @@ export async function GET(request: NextRequest) {
     const codeVerifier = request.cookies.get('twitter_code_verifier')?.value
     const userId = request.cookies.get('twitter_user_id')?.value
     
+    console.log('Callback verification:', {
+      receivedState: state,
+      storedState: storedState ? 'exists' : 'missing',
+      codeVerifier: codeVerifier ? 'exists' : 'missing',
+      userId: userId ? 'exists' : 'missing',
+      stateMatch: storedState === state
+    })
+    
     if (!storedState || !codeVerifier || !userId || storedState !== state) {
+      console.error('State verification failed:', {
+        storedState: storedState || 'none',
+        receivedState: state,
+        hasCodeVerifier: !!codeVerifier,
+        hasUserId: !!userId
+      })
       return NextResponse.redirect(
-        new URL('/dashboard/settings?error=invalid_state', request.url)
+        new URL('/dashboard/settings?error=invalid_state', baseUrl)
       )
     }
     
@@ -56,13 +71,13 @@ export async function GET(request: NextRequest) {
     if (updateError) {
       console.error('Error updating user with Twitter data:', updateError)
       return NextResponse.redirect(
-        new URL('/dashboard/settings?error=database_error', request.url)
+        new URL('/dashboard/settings?error=database_error', baseUrl)
       )
     }
     
     // Clear OAuth cookies
     const response = NextResponse.redirect(
-      new URL('/dashboard/settings?success=twitter_connected', request.url)
+      new URL('/dashboard/settings?success=twitter_connected', baseUrl)
     )
     
     response.cookies.delete('twitter_oauth_state')
@@ -73,8 +88,23 @@ export async function GET(request: NextRequest) {
     
   } catch (error: any) {
     console.error('Twitter OAuth callback error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response
+    })
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-lp-yrhn.vercel.app'
+    
+    // より詳細なエラーメッセージを提供
+    let errorParam = 'oauth_failed'
+    if (error.message.includes('Token exchange failed')) {
+      errorParam = 'token_exchange_failed'
+    } else if (error.message.includes('database')) {
+      errorParam = 'database_error'
+    }
+    
     return NextResponse.redirect(
-      new URL('/dashboard/settings?error=oauth_failed', request.url)
+      new URL(`/dashboard/settings?error=${errorParam}&details=${encodeURIComponent(error.message)}`, baseUrl)
     )
   }
 }

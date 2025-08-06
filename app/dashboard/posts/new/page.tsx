@@ -51,7 +51,7 @@ export default function NewPostPage() {
 
   const generateContent = async () => {
     if (!prompt && !selectedProduct) {
-      setError('Please provide a prompt or select a product')
+      setError('プロンプトを入力するか、商品を選択してください')
       return
     }
 
@@ -74,7 +74,7 @@ export default function NewPostPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate content')
+        throw new Error(data.error || 'コンテンツの生成に失敗しました')
       }
 
       setVariations(data.variations)
@@ -92,12 +92,12 @@ export default function NewPostPage() {
       : customContent
 
     if (!content.trim()) {
-      setError('Please provide content or select a generated variation')
+      setError('コンテンツを入力するか、生成されたバリエーションを選択してください')
       return
     }
 
     if (!publishImmediately && !scheduledFor) {
-      setError('Please select a date and time for scheduling')
+      setError('スケジュールの日時を選択してください')
       return
     }
 
@@ -128,13 +128,13 @@ export default function NewPostPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to publish post')
+        throw new Error(data.error || '投稿の公開に失敗しました')
       }
 
       if (data.scheduled) {
-        setSuccess('Post scheduled successfully!')
+        setSuccess('投稿をスケジュールしました！')
       } else if (data.published) {
-        setSuccess('Post published successfully!')
+        setSuccess('投稿を公開しました！')
       }
 
       // Reset form after success
@@ -158,9 +158,9 @@ export default function NewPostPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Create New Post</h1>
+        <h1 className="text-2xl font-bold text-gray-900">新規投稿作成</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Generate AI-powered content or create your own post
+          AIでコンテンツを生成するか、独自の投稿を作成します
         </p>
       </div>
 
@@ -180,16 +180,16 @@ export default function NewPostPage() {
         {/* Content Generation Section */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">AI Content Generation</h2>
+            <h2 className="card-title">AIコンテンツ生成</h2>
             <p className="card-description">
-              Generate engaging content using AI based on your products or custom prompts
+              商品情報やカスタムプロンプトを使ってAIが魅力的なコンテンツを生成します
             </p>
           </div>
           <div className="card-content space-y-4">
             {/* Product Selection */}
             <div>
               <label htmlFor="product" className="block text-sm font-medium text-gray-700 mb-2">
-                Select Product (Optional)
+                商品を選択（オプション）
               </label>
               <select
                 id="product"
@@ -197,7 +197,7 @@ export default function NewPostPage() {
                 onChange={(e) => setSelectedProduct(e.target.value)}
                 className="input"
               >
-                <option value="">Choose a product...</option>
+                <option value="">商品を選択...</option>
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
                     {product.name}
@@ -206,7 +206,7 @@ export default function NewPostPage() {
               </select>
               {products.length === 0 && (
                 <p className="text-sm text-gray-500 mt-1">
-                  No products found. <a href="/dashboard/products" className="text-blue-600 hover:text-blue-500">Create one first</a>.
+                  商品が見つかりません。<a href="/dashboard/products" className="text-blue-600 hover:text-blue-500">先に作成してください</a>。
                 </p>
               )}
             </div>
@@ -214,13 +214,13 @@ export default function NewPostPage() {
             {/* Prompt Input */}
             <div>
               <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-2">
-                Content Prompt
+                コンテンツプロンプト
               </label>
               <textarea
                 id="prompt"
                 rows={3}
                 className="textarea"
-                placeholder="Describe what you want to post about... (e.g., 'Share a tip about productivity', 'Announce our new feature', 'Create engaging content about our product benefits')"
+                placeholder="投稿したい内容を説明してください... (例: '生産性に関するヒントを共有', '新機能の発表', '製品のメリットに関する魅力的なコンテンツ')"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               />
@@ -234,10 +234,10 @@ export default function NewPostPage() {
               {generating ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Generating variations...
+                  バリエーションを生成中...
                 </div>
               ) : (
-                'Generate Content Variations'
+                'コンテンツバリエーションを生成'
               )}
             </button>
           </div>
@@ -247,9 +247,9 @@ export default function NewPostPage() {
         {variations.length > 0 && (
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">Generated Variations</h2>
+              <h2 className="card-title">生成されたバリエーション</h2>
               <p className="card-description">
-                Choose your favorite variation or use it as inspiration
+                お気に入りのバリエーションを選ぶか、インスピレーションとして使ってください
               </p>
             </div>
             <div className="card-content">
@@ -275,7 +275,7 @@ export default function NewPostPage() {
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                           />
                           <label className="ml-2 text-sm font-medium text-gray-900">
-                            Variation {variation.variation_number}
+                            バリエーション {variation.variation_number}
                           </label>
                         </div>
                         <p className="text-gray-700 whitespace-pre-wrap">{variation.content}</p>
@@ -293,7 +293,7 @@ export default function NewPostPage() {
                         )}
                       </div>
                       <div className="ml-4 text-sm text-gray-500">
-                        {variation.content.length} chars
+                        {variation.content.length} 文字
                       </div>
                     </div>
                   </div>
@@ -306,16 +306,16 @@ export default function NewPostPage() {
         {/* Custom Content */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Custom Content</h2>
+            <h2 className="card-title">カスタムコンテンツ</h2>
             <p className="card-description">
-              Write your own content or edit the generated variations
+              独自のコンテンツを書くか、生成されたバリエーションを編集してください
             </p>
           </div>
           <div className="card-content">
             <textarea
               rows={4}
               className="textarea"
-              placeholder="Write your own content here..."
+              placeholder="ここに独自のコンテンツを書いてください..."
               value={customContent}
               onChange={(e) => {
                 setCustomContent(e.target.value)
@@ -324,11 +324,11 @@ export default function NewPostPage() {
             />
             <div className="flex justify-between items-center mt-2">
               <div className="text-sm text-gray-500">
-                {customContent.length}/280 characters
+                {customContent.length}/280 文字
               </div>
               {customContent.length > 280 && (
                 <div className="text-sm text-red-600">
-                  Content exceeds Twitter limit
+                  Twitterの文字数制限を超えています
                 </div>
               )}
             </div>
@@ -338,15 +338,15 @@ export default function NewPostPage() {
         {/* Scheduling */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Publishing Options</h2>
+            <h2 className="card-title">公開オプション</h2>
             <p className="card-description">
-              Choose when to publish your post
+              投稿を公開するタイミングを選びます
             </p>
           </div>
           <div className="card-content space-y-4">
             <div>
               <label htmlFor="scheduled" className="block text-sm font-medium text-gray-700 mb-2">
-                Schedule for later (Optional)
+                後でスケジュール（オプション）
               </label>
               <input
                 type="datetime-local"
@@ -358,7 +358,7 @@ export default function NewPostPage() {
               />
               {scheduledFor && (
                 <p className="text-sm text-gray-500 mt-1">
-                  Post will be published on {new Date(scheduledFor).toLocaleString()}
+                  投稿は {new Date(scheduledFor).toLocaleString('ja-JP')} に公開されます
                 </p>
               )}
             </div>
@@ -372,10 +372,10 @@ export default function NewPostPage() {
                 {publishing ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Publishing...
+                    公開中...
                   </div>
                 ) : (
-                  'Publish Now'
+                  '今すぐ公開'
                 )}
               </button>
 
@@ -388,10 +388,10 @@ export default function NewPostPage() {
                   {publishing ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
-                      Scheduling...
+                      スケジュール中...
                     </div>
                   ) : (
-                    'Schedule Post'
+                    'スケジュール投稿'
                   )}
                 </button>
               )}
@@ -403,21 +403,21 @@ export default function NewPostPage() {
         {(selectedVariation !== null || customContent.trim()) && (
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">Preview</h2>
-              <p className="card-description">How your post will look</p>
+              <h2 className="card-title">プレビュー</h2>
+              <p className="card-description">投稿の表示イメージ</p>
             </div>
             <div className="card-content">
               <div className="bg-white border rounded-lg p-4 max-w-md mx-auto" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                 <div className="flex items-start space-x-3">
                   <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-sm font-medium text-gray-700">
-                    You
+                    あなた
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <span className="font-bold text-gray-900">Your Name</span>
+                      <span className="font-bold text-gray-900">あなたの名前</span>
                       <span className="text-gray-500">@your_handle</span>
                       <span className="text-gray-500">·</span>
-                      <span className="text-gray-500">now</span>
+                      <span className="text-gray-500">たった今</span>
                     </div>
                     <div className="text-gray-900 whitespace-pre-wrap">
                       {selectedVariation !== null ? variations[selectedVariation].content : customContent}
@@ -432,25 +432,25 @@ export default function NewPostPage() {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
-                        <span className="text-sm">Reply</span>
+                        <span className="text-sm">返信</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                         </svg>
-                        <span className="text-sm">Retweet</span>
+                        <span className="text-sm">リツイート</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
-                        <span className="text-sm">Like</span>
+                        <span className="text-sm">いいね</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                         </svg>
-                        <span className="text-sm">Share</span>
+                        <span className="text-sm">共有</span>
                       </div>
                     </div>
                   </div>
