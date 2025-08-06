@@ -19,15 +19,22 @@ export async function GET(request: NextRequest) {
       }, { status: 500 })
     }
 
-    // シンプルなOAuth URLを生成（PKCEなし版でテスト）
+    // PKCE対応のOAuth URLを生成（Twitter OAuth 2.0では必須）
     const state = crypto.randomBytes(16).toString('hex')
+    const codeVerifier = crypto.randomBytes(32).toString('base64url')
+    const codeChallenge = crypto
+      .createHash('sha256')
+      .update(codeVerifier)
+      .digest('base64url')
     
     const params = new URLSearchParams({
       response_type: 'code',
       client_id: clientId,
       redirect_uri: redirectUri,
       scope: 'tweet.read tweet.write users.read offline.access',
-      state: state
+      state: state,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256'
     })
 
     const authUrl = `https://twitter.com/i/oauth2/authorize?${params.toString()}`
@@ -104,6 +111,7 @@ Client ID: ${clientId.substring(0, 10)}...
 Redirect URI: ${redirectUri}
 Scope: tweet.read tweet.write users.read offline.access
 State: ${state}
+PKCE: Enabled (code_challenge_method: S256)
             </pre>
           </div>
 
@@ -142,11 +150,30 @@ State: ${state}
       </html>
     `
     
-    return new NextResponse(html, {
+    const responseWithCookie = new NextResponse(html, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
       },
     })
+    
+    // PKCEのcode_verifierとstateをcookieに保存
+    responseWithCookie.cookies.set('test_code_verifier', codeVerifier, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 600,
+      path: '/'
+    })
+    
+    responseWithCookie.cookies.set('test_oauth_state', state, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 600,
+      path: '/'
+    })
+    
+    return responseWithCookie
     
   } catch (error: any) {
     return NextResponse.json({
