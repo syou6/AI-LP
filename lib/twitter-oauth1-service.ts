@@ -141,7 +141,7 @@ export class TwitterOAuth1Service {
         'tweet.fields': ['public_metrics'],
       })
 
-      const metrics = response.data.public_metrics || {}
+      const metrics = response.data.public_metrics || {} as any
 
       return {
         impressions: 0, // Free tierでは取得できない
@@ -181,7 +181,7 @@ export class TwitterOAuth1Service {
         'user.fields': ['public_metrics'],
       })
 
-      const metrics = response.data.public_metrics || {}
+      const metrics = response.data.public_metrics || {} as any
 
       return {
         followers_count: metrics.followers_count || 0,
