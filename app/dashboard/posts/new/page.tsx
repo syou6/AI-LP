@@ -86,7 +86,7 @@ export default function NewPostPage() {
     }
   }
 
-  const publishPost = async (publishImmediately: boolean = true) => {
+  const openTwitterWithContent = () => {
     const content = selectedVariation !== null 
       ? variations[selectedVariation].content 
       : customContent
@@ -96,20 +96,24 @@ export default function NewPostPage() {
       return
     }
 
-    if (!publishImmediately && !scheduledFor) {
-      setError('スケジュールの日時を選択してください')
-      return
-    }
+    const hashtags = selectedVariation !== null 
+      ? variations[selectedVariation].hashtags 
+      : []
 
-    setPublishing(true)
-    setError('')
-    setSuccess('')
+    const fullContent = hashtags.length > 0 
+      ? `${content}\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`
+      : content
 
+    // Twitter投稿画面を開く
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullContent)}`
+    window.open(tweetUrl, '_blank', 'width=550,height=420')
+
+    // 投稿を下書きとして保存
+    saveAsDraft(content, hashtags)
+  }
+
+  const saveAsDraft = async (content: string, hashtags: string[]) => {
     try {
-      const hashtags = selectedVariation !== null 
-        ? variations[selectedVariation].hashtags 
-        : []
-
       const response = await fetch('/api/posts/publish', {
         method: 'POST',
         headers: {
@@ -118,35 +122,28 @@ export default function NewPostPage() {
         body: JSON.stringify({
           content,
           product_id: selectedProduct || undefined,
-          scheduled_for: !publishImmediately ? scheduledFor : undefined,
-          publish_immediately: publishImmediately,
+          scheduled_for: scheduledFor || undefined,
+          publish_immediately: false,
           hashtags,
           ai_prompt: prompt || undefined,
+          status: 'draft',
         }),
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || '投稿の公開に失敗しました')
+      if (response.ok) {
+        setSuccess('下書きとして保存し、Twitter投稿画面を開きました！')
+        setTimeout(() => {
+          router.push('/dashboard/posts')
+        }, 2000)
       }
-
-      if (data.scheduled) {
-        setSuccess('投稿をスケジュールしました！')
-      } else if (data.published) {
-        setSuccess('投稿を公開しました！')
-      }
-
-      // Reset form after success
-      setTimeout(() => {
-        router.push('/dashboard/posts')
-      }, 2000)
-
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setPublishing(false)
+    } catch (err) {
+      console.error('Failed to save draft:', err)
     }
+  }
+
+  const publishPost = async (publishImmediately: boolean = true) => {
+    // Free tierではTwitter投稿画面を開く
+    openTwitterWithContent()
   }
 
   const getMinDateTime = () => {
@@ -372,10 +369,10 @@ export default function NewPostPage() {
                 {publishing ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    公開中...
+                    準備中...
                   </div>
                 ) : (
-                  '今すぐ公開'
+                  '🐦 Twitterで投稿'
                 )}
               </button>
 
